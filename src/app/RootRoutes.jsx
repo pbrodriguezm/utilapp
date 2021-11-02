@@ -11,6 +11,7 @@ import dragAndDropRoute from './views/Drag&Drop/DragAndDropRoute'
 import formsRoutes from './views/forms/FormsRoutes'
 import mapRoutes from './views/map/MapRoutes'
 import systemRoutes from './views/system/SystemRoutes'
+import reclamosRoutes from './views/reclamos/reclamosRoutes'
 
 
 const redirectRoute = [
@@ -28,6 +29,7 @@ const errorRoute = [
 ]
 
 const routes = [
+    ...reclamosRoutes,
     ...systemRoutes,
     ...dashboardRoutes,
     ...materialRoutes,

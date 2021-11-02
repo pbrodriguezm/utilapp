@@ -16,10 +16,18 @@ export const navigations = [
         path: '/system/config',
         
     },
+
     {
         label: 'Pages',
         type: 'label',
     },
+    {
+        name: 'Reclamaciones',
+        icon: 'class',
+        path: '/complaints/list',
+        
+    },
+
     {
         name: 'Session/Auth',
         icon: 'security',
