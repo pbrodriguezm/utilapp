@@ -17,7 +17,7 @@ const NotFound = () => {
                         variant="contained"
                         color="primary"
                     >
-                        Back to Dashboard
+                        Regresar a la civilización
                     </Button>
                 </Link>
             </div>

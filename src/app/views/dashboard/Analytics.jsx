@@ -8,18 +8,31 @@ import StatCards2 from './shared/StatCards2'
 import UpgradeCard from './shared/UpgradeCard'
 import Campaigns from './shared/Campaigns'
 import { useTheme } from '@material-ui/styles'
-
+import { Breadcrumb, SimpleCard } from 'app/components'
 const Analytics = () => {
     const theme = useTheme()
 
     return (
         <Fragment>
             <div className="analytics m-sm-30 mt-6">
-                <Grid container spacing={3}>
+
+                <SimpleCard title="Bienvenido">
+                    <p className="m-0">
+                        <code>Utilitarios Clínica Arequipa</code>
+                    </p>
+
+                    <div>
+                        <img src="https://www.clinicarequipa.com.pe/wp-content/uploads/2019/02/51518371_622726551489824_2879357276513107968_n.png" width="350px"></img>
+                    </div>
+
+
+                </SimpleCard>
+
+                {/* <Grid container spacing={3}>
                     <Grid item lg={8} md={8} sm={12} xs={12}>
                         <StatCards />
 
-                        {/* Top Selling Products */}
+            
                         <TopSellingTable />
 
                         <StatCards2 />
@@ -48,7 +61,7 @@ const Analytics = () => {
 
                         <Campaigns />
                     </Grid>
-                </Grid>
+                </Grid> */}
             </div>
         </Fragment>
     )

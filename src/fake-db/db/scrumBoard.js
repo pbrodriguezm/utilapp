@@ -8,7 +8,7 @@ const ScrumBoardDB = {
     boardList: [
         {
             id: 'c5d7498bbcb84d81fc7454448871ac6a6e',
-            title: 'Matx React',
+            title: 'Proyecto Clinica',
             list: [
                 {
                     id: shortId.generate(),

@@ -92,13 +92,10 @@ export const AuthProvider = ({ children }) => {
             password: password
         })
 
-
         const user = response.data.Data
         const accessToken = response.data.Token
         
-        console.log('----------->',user)
         setSession(accessToken)
-
         dispatch({
             type: 'LOGIN',
             payload: {
@@ -106,6 +103,22 @@ export const AuthProvider = ({ children }) => {
             },
         })
     }
+
+
+    const loginGoogle = async (username, userInfo) => {
+
+        const user = {Nombre: userInfo.name, Usuario: userInfo.email}
+        const accessToken = userInfo.googleId
+        
+        setSession(accessToken)
+        dispatch({
+            type: 'LOGIN',
+            payload: {
+                user,
+            },
+        })
+    }
+
 
     const register = async (email, username, password) => {
         const response = await axios.post('/api/auth/register', {
@@ -181,6 +194,7 @@ export const AuthProvider = ({ children }) => {
                 ...state,
                 method: 'JWT',
                 login,
+                loginGoogle,
                 logout,
                 register,
             }}

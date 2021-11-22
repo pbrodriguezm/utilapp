@@ -1,17 +1,21 @@
-import axios from '../../../api';
+import axios from '../../../api_cloud';
 import React, {useEffect} from 'react';
 import { Breadcrumb, SimpleCard } from 'app/components'
-import ListReclamos from './ListReclamos'
+import ListItems from './ListItems'
 import ReclamoNuevo from './nuevo/ReclamoNuevoModal'
 import {
     Icon,
     ButtonGroup,
     Button,
+    LinearProgress,
+    CircularProgress,
+    Backdrop
 } from '@material-ui/core'
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import Dialog from '@material-ui/core/Dialog'
-
+import DialogActions from '@mui/material/DialogActions';
+import DialogTitle from '@mui/material/DialogTitle';
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
@@ -19,7 +23,7 @@ import Typography from '@material-ui/core/Typography'
 import CloseIcon from '@material-ui/icons/Close'
 import Slide from '@material-ui/core/Slide'
 //import ReclamoNuevoModal from './ReclamoNuevoModal'
-
+import SearchBar from "material-ui-search-bar";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -30,11 +34,17 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const Reclamos = () => {
 
     const [open, setOpen] = React.useState(false)
+    const [openConfirm, setOpenConfirm] = React.useState(false)
+    
     const [openexport, setOpenExport] = React.useState(false)
     const [scroll, setScroll] = React.useState('paper');
     const [reaload, setReload] = React.useState('texto');
     const [loading, setLoading] = React.useState(false);
-    const [subscribarList, setListReclamos] = React.useState([]);
+    const [subscribarList, setListItems] = React.useState([]);
+    const [filterList, setFilterList] = React.useState(subscribarList);
+    const [searched, setSearched] = React.useState('');
+
+    
 
     function handleClickOpen() {
         setOpen(true)
@@ -49,15 +59,27 @@ const Reclamos = () => {
     
 
 /*Cargando data*/    
-    function loadData(){
-        console.log('cargandoData');
+    function loadData() {
         setLoading(true);
-        axios.get('/api/util/reclamos').then((response) => {
-        setListReclamos(response.data)
-        setLoading(false);
-       
-       })
+        axios.get('/farmacia/items').then((response) => {
+            setListItems(response.data)
+            setFilterList(response.data)
+            setLoading(false);
+        })
     }
+
+    // Busqueda 
+    const requestSearch = (searchedVal) => {
+        const filteredRows = subscribarList.filter(selectlist => {
+            return selectlist.valor.descripcionlocal.toLowerCase().includes(searchedVal.toLowerCase());
+        });
+        setFilterList(filteredRows);
+    };
+
+    const cancelSearch = () => {
+        setSearched("");
+        requestSearch(searched);
+    };
 
     //Click Open Button Export Format
     function handleClickOpenExport() {
@@ -73,7 +95,26 @@ const Reclamos = () => {
         console.log(parentToChild)
     }
 
-       
+    const handleConfirmClose = () => {
+        setOpenConfirm(false);
+      };
+
+    const handleConfirmClickOpen = () => {
+        setOpenConfirm(true);
+     };
+
+
+    const handleUpdateCloud = () => {
+        handleConfirmClose()
+        setLoading(true);
+        axios.get('/farmacia/interface').then((response) => {
+            setListItems(response.data)
+            setFilterList(response.data)
+            setLoading(false);
+
+        })
+     };
+
     useEffect(() => {
         loadData()
     }, []);
@@ -82,33 +123,35 @@ const Reclamos = () => {
             <div className="mb-sm-30">
                 <Breadcrumb
                     routeSegments={[
-                        { name: 'Reclamos', path: '/material' },
-                        { name: 'Listado' },
+                        { name: 'Farmacia', path: '/dashboard' },
+                        { name: 'Listado Farmacia' },
                     ]}
                 />
             </div>
             <div className="y-center">
                 <ButtonGroup variant="contained" aria-label="outlined button group">
                     <Button
-                       onClick={handleClickOpen}
+                        onClick={handleConfirmClickOpen}
                     >
-                        <Icon className="mr-2">add_circle_outline</Icon>
-                        Nuevo
+                        <Icon className="mr-2">cloud_done</Icon>
+                        Actualizar listado
                     </Button>
-                    <Button
-                        onClick={handleClickOpenExport}
-                    >
-                        <Icon className="mr-2">cloud_download</Icon>Exportar
-                    </Button>
+                    <SearchBar
+                        value={searched}
+                        onChange={(searchVal) => requestSearch(searchVal)}
+                        onCancelSearch={() => cancelSearch()}
+                    />
                 </ButtonGroup>
             </div>
 
-            
-            <SimpleCard title="Listado de reclamos">
-                <ListReclamos 
+            <div>
+                {loading && <LinearProgress color="secondary" />}
+            </div>
+            <SimpleCard title="Productos">
+                <ListItems 
                     openexport={openexport}
                     closeexport={handleCloseExport}
-                    subscribarList={subscribarList}
+                    subscribarList={filterList}
                 />
             </SimpleCard>
 
@@ -158,7 +201,34 @@ const Reclamos = () => {
                    
                 </DialogContentText>
         </DialogContent>
+
       </Dialog>
+
+
+
+        {/* Dialog Alert UPLOAD ****/}
+
+            <Dialog
+                open={openConfirm}
+                onClose={handleConfirmClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"¿Desea actualizar la data?"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Le recordamos que si acepta este mensaje, se borraran todos los datos de la aplicación, y serán actualizados desde el servidor SPRING local.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleConfirmClose}>cancelar</Button>
+                    <Button onClick={handleUpdateCloud} autoFocus>
+                        Aceptar
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
         </div>
         )

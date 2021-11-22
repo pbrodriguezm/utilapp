@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     Card,
     Checkbox,
@@ -8,11 +8,13 @@ import {
     CircularProgress,
 } from '@material-ui/core'
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator'
-
+import { GoogleLogin, GoogleLogout } from "react-google-login";
 import { makeStyles } from '@material-ui/core/styles'
 import history from 'history.js'
 import clsx from 'clsx'
 import useAuth from 'app/hooks/useAuth'
+import axios from '../../../../apiSpring'
+
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     cardHolder: {
@@ -32,14 +34,17 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
     },
 }))
 
+
 const JwtLogin = () => {
     const [loading, setLoading] = useState(false)
+    const [statusSpring, setStatusSpring] = useState(false)
+    const [dataSpring, setDataSpring] = useState(false)
     const [userInfo, setUserInfo] = useState({
-        username: 'prodriguezm',
-        password: '12345',
+        username: '',
+        password: '',
     })
     const [message, setMessage] = useState('')
-    const { login } = useAuth()
+    const { login, loginGoogle } = useAuth()
 
     const classes = useStyles()
 
@@ -48,6 +53,46 @@ const JwtLogin = () => {
         temp[name] = value
         setUserInfo(temp)
     }
+
+    /*Cargando data*/
+    function loadData() {
+        setLoading(true)
+        axios.get('/ping').then((response) => {
+            setDataSpring(response.data)
+            setStatusSpring(true);
+            setLoading(false)
+        })
+    }
+
+
+    useEffect(() => {
+        loadData()
+    }, []);
+
+    const CLIENT_ID =
+        "546043514231-snk9kivtgljiuqtgvrbjvd9qt5sr1tfa.apps.googleusercontent.com";
+    
+        // Success Handler GOOGLE
+    const responseGoogleSuccess = async (response) => {
+        console.log(response);
+        let userInfo = {
+            name: response.profileObj.name,
+            emailId: response.profileObj.email,
+        };
+        //this.setState({ userInfo, isLoggedIn: true });
+
+        setLoading(true)
+        try {
+            await loginGoogle(userInfo.emailId, userInfo)
+            history.push('/')
+        } catch (e) {
+            console.log(e)
+            setMessage(e.message)
+            setLoading(false)
+        }
+
+    };
+
 
     const handleFormSubmit = async (event) => {
         setLoading(true)
@@ -109,28 +154,6 @@ const JwtLogin = () => {
                                     validators={['required']}
                                     errorMessages={['Requiere clave']}
                                 />
-                                <FormControlLabel
-                                    className="mb-3 min-w-288"
-                                    name="agreement"
-                                    onChange={handleChange}
-                                    control={
-                                        <Checkbox
-                                            size="small"
-                                            onChange={({
-                                                target: { checked },
-                                            }) =>
-                                                handleChange({
-                                                    target: {
-                                                        name: 'agreement',
-                                                        value: checked,
-                                                    },
-                                                })
-                                            }
-                                            checked={userInfo.agreement || true}
-                                        />
-                                    }
-                                    label="Recordar en este equipo"
-                                />
 
                                 {message && (
                                     <p className="text-error">{message}</p>
@@ -141,10 +164,12 @@ const JwtLogin = () => {
                                         <Button
                                             variant="contained"
                                             color="primary"
-                                            disabled={loading}
+                                            disabled={loading || !statusSpring}
                                             type="submit"
                                         >
-                                            Ingresar
+                                        {statusSpring ? (
+                                           'Login Spring'
+                                        ): ('Spring OFF')}
                                         </Button>
                                         {loading && (
                                             <CircularProgress
@@ -155,24 +180,31 @@ const JwtLogin = () => {
                                             />
                                         )}
                                     </div>
-                                    <span className="mr-2 ml-5">or</span>
-                                    <Button
-                                        className="capitalize"
-                                        onClick={() =>
-                                            history.push('/session/signup')
-                                        }
-                                    >
-                                        Solicitar acceso
-                                    </Button>
+                                    <span className="mr-2 ml-5">o</span>
+                                    <GoogleLogin
+                                        clientId={CLIENT_ID}
+                                        buttonText="Login Gmail"
+                                        onSuccess={responseGoogleSuccess}
+                                        //onFailure={responseGoogleError}
+                                        isSignedIn={false}
+                                        cookiePolicy={"single_host_origin"}
+                                    />
                                 </div>
-                                <Button
+                                <div className="text-small">Clínica Arequipa 2021</div>
+                                <div className="text-small">Server Spring  {statusSpring ? (
+                                           'online'
+                                        ): ('offline')} | versión {dataSpring?.version} </div>
+                                <span className="text-small">{dataSpring?.autor}</span>
+                                 
+                                
+                                {/* <Button
                                     className="text-primary"
                                     onClick={() =>
                                         history.push('/session/forgot-password')
                                     }
                                 >
                                     olvidé mi clave
-                                </Button>
+                                </Button> */}
                             </ValidatorForm>
                         </div>
                     </Grid>

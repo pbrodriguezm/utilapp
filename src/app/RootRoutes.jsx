@@ -12,6 +12,7 @@ import formsRoutes from './views/forms/FormsRoutes'
 import mapRoutes from './views/map/MapRoutes'
 import systemRoutes from './views/system/SystemRoutes'
 import reclamosRoutes from './views/reclamos/reclamosRoutes'
+import farmaciaRoutes from './views/farmacia/farmaciaRoutes'
 
 
 const redirectRoute = [
@@ -30,6 +31,7 @@ const errorRoute = [
 
 const routes = [
     ...reclamosRoutes,
+    ...farmaciaRoutes,
     ...systemRoutes,
     ...dashboardRoutes,
     ...materialRoutes,
