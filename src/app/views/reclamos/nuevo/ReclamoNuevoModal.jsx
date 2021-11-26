@@ -32,6 +32,7 @@ const ReclamoNuevo = ({close}) => {
     const [origenList, setListOrigenReclamo] = useState([]);
     const [resultadoList, setListResultadoReclamo] = useState([]);
     const [loading, setLoading] = useState(false);  
+    const [loadingdni, setLoadingDNI] = useState(false);  
     
     const [state, setState] = useState({
         ZFechaPresentacion: new Date(),
@@ -149,7 +150,7 @@ const ReclamoNuevo = ({close}) => {
 
     const handleChangeDocumento = (event) => {
         
-        setLoading(true);
+        setLoadingDNI(true);
         event.persist()
         let documentonumber=event.target.value;
         if(documentonumber.length === 8 ) {
@@ -161,9 +162,7 @@ const ReclamoNuevo = ({close}) => {
                     ['NApellidoMa']: response.data.apellidoMaterno,
                     [event.target.name]: documentonumber,
                 })
-
-                    console.log(response)
-                setLoading(false);
+                setLoadingDNI(false);
             })
         }
     }
@@ -271,8 +270,7 @@ const ReclamoNuevo = ({close}) => {
             <SimpleCard title="1 Identificación del usuario o tercero legitimado">
                     <Grid container spacing={6}>
                         <Grid item xs>
-
-                        <TextValidator
+                            <TextValidator
                                 className="mb-4 w-full"
                                 label="Número de Reclamo"
                                 onChange={handleChange}
@@ -283,10 +281,10 @@ const ReclamoNuevo = ({close}) => {
                                 required
                                 InputLabelProps={{
                                     shrink: true,
-                                  }}
+                                }}
                             />
 
-                        <InputLabel id="quienreclamo">Quién presenta el reclamo</InputLabel>
+                            <InputLabel id="quienreclamo">Quién presenta el reclamo</InputLabel>
                             <Select
                                 labelId="quienreclamo"
                                 className="mb-4 w-full"
@@ -295,11 +293,11 @@ const ReclamoNuevo = ({close}) => {
                                 label="Etapa"
                                 onChange={handleChange}
                             >
-                                
-                               <MenuItem value={0}>Usuario afectado</MenuItem>
+
+                                <MenuItem value={0}>Usuario afectado</MenuItem>
                                 <MenuItem value={1}>Tercero legitimado</MenuItem>
                             </Select>
-                           
+
                             <TextValidator
                                 className="mb-4 w-full"
                                 label="Domicilio"
@@ -329,11 +327,11 @@ const ReclamoNuevo = ({close}) => {
                                 value={XMobile}
                             />
 
-                            <MuiPickersUtilsProvider  utils={DateFnsUtils}>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                 <KeyboardDatePicker
                                     className="mb-4 w-full"
                                     margin="none"
-                                    format={"yyyy/MM/dd"} 
+                                    format={"yyyy/MM/dd"}
                                     id="mui-pickers-date"
                                     label="Fecha de presentación de reclamo"
                                     inputVariant="standard"
@@ -347,17 +345,16 @@ const ReclamoNuevo = ({close}) => {
                                     }}
                                 />
                             </MuiPickersUtilsProvider>
-                          
 
-                            
+
+
 
                         </Grid>
-                         <Grid item xs>
-                         
-                         <TextValidator
+                        <Grid item xs>
+                            <TextValidator
                                 className="mb-4 w-full"
                                 label="N° Documento Identidad"
-                                loading={loading}
+                                loading={loadingdni}
                                 autoComplete="off"
                                 name="JDocunmento"
                                 type="text"
@@ -365,18 +362,18 @@ const ReclamoNuevo = ({close}) => {
                                 onChange={handleChangeDocumento}
                                 required
                             />
-                           {loading && <LinearProgress color="secondary" />}
+                            {loadingdni && <LinearProgress color="secondary" />}
 
-                        {OTipoDocumento === 1 ? (
-                        <div>
-                        <Grid container spacing={4}>
+                            {OTipoDocumento === 1 ? (
+                                <div>
+                                    <Grid container spacing={4}>
 
                                         <Grid item xs>
-                                       
+
                                             <TextValidator
-                                                
+
                                                 className="mb-4 w-full"
-                                                
+
                                                 autoComplete="off"
                                                 onChange={handleChange}
                                                 type="text"
@@ -386,55 +383,55 @@ const ReclamoNuevo = ({close}) => {
                                                 label="Nombre"
                                                 InputLabelProps={{
                                                     shrink: true,
-                                                  }}
+                                                }}
                                                 errorMessages={['Es requerido este campo']}
                                             />
-                                        </Grid> 
-                                        <Grid item xs>
-                                            <TextValidator
-                                                    className="mb-4 w-full"
-                                                    autoComplete="off"
-                                                    onChange={handleChange}
-                                                    type="text"
-                                                    name="MApellidoPa"
-                                                    value={MApellidoPa}
-                                                    required
-                                                    label="Ape. Paterno"
-                                                    InputLabelProps={{
-                                                        shrink: true,
-                                                      }}
-                                                    errorMessages={['Es requerido este campo']}
-                                                />
-                                        </Grid>  
-                                        <Grid item xs>
-                                            <TextValidator
-                                                    className="mb-4 w-full"
-                                                    autoComplete="off"
-                                                    onChange={handleChange}
-                                                    type="text"
-                                                    name="NApellidoMa"
-                                                    value={NApellidoMa}
-                                                    required
-                                                    label="Ape. Materno"
-                                                    InputLabelProps={{
-                                                        shrink: true,
-                                                      }}
-                                                    errorMessages={['Es requerido este campo']}
-                                                /> 
                                         </Grid>
-                            </Grid>
- 
-                            </div>):( <TextValidator
-                                        className="mb-4 w-full"
-                                        label="Nombre o Razón social"
-                                        autoComplete="off"
-                                        onChange={handleChange}
-                                        type="text"
-                                        name="KRazonSocial"
-                                        value={KRazonSocial}
-                                        required
-                                        errorMessages={['Es requerido este campo']}
-                                    />) }
+                                        <Grid item xs>
+                                            <TextValidator
+                                                className="mb-4 w-full"
+                                                autoComplete="off"
+                                                onChange={handleChange}
+                                                type="text"
+                                                name="MApellidoPa"
+                                                value={MApellidoPa}
+                                                required
+                                                label="Ape. Paterno"
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
+                                                errorMessages={['Es requerido este campo']}
+                                            />
+                                        </Grid>
+                                        <Grid item xs>
+                                            <TextValidator
+                                                className="mb-4 w-full"
+                                                autoComplete="off"
+                                                onChange={handleChange}
+                                                type="text"
+                                                name="NApellidoMa"
+                                                value={NApellidoMa}
+                                                required
+                                                label="Ape. Materno"
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
+                                                errorMessages={['Es requerido este campo']}
+                                            />
+                                        </Grid>
+                                    </Grid>
+
+                                </div>) : (<TextValidator
+                                    className="mb-4 w-full"
+                                    label="Nombre o Razón social"
+                                    autoComplete="off"
+                                    onChange={handleChange}
+                                    type="text"
+                                    name="KRazonSocial"
+                                    value={KRazonSocial}
+                                    required
+                                    errorMessages={['Es requerido este campo']}
+                                />)}
                             <TextValidator
                                 className="mb-4 w-full"
                                 label="Hora"
@@ -445,11 +442,11 @@ const ReclamoNuevo = ({close}) => {
                                 value={SSHora}
                                 InputLabelProps={{
                                     shrink: true,
-                                  }}
+                                }}
                             />
 
 
-                        <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                            <InputLabel variant="standard" htmlFor="uncontrolled-native">
                                 Autoriza notificación de reclamo por correo
                             </InputLabel>
                             <Select
@@ -458,7 +455,7 @@ const ReclamoNuevo = ({close}) => {
                                 value={Uautoriza_por_corre}
                                 name="Uautoriza_por_corre"
                                 onChange={handleChange}
-                                
+
                             >
                                 <MenuItem value={1}>Si</MenuItem>
                                 <MenuItem value={2}>No</MenuItem>
@@ -466,8 +463,8 @@ const ReclamoNuevo = ({close}) => {
                             </Select>
 
 
-                           
-                           <InputLabel id="estadoreclamo">Estado del reclamo</InputLabel>
+
+                            <InputLabel id="estadoreclamo">Estado del reclamo</InputLabel>
                             <Select
                                 labelId="estadoreclamo"
                                 className="mb-4 w-full"
@@ -476,7 +473,7 @@ const ReclamoNuevo = ({close}) => {
                                 label="Estado"
                                 onChange={handleChange}
                             >
-                               
+
                                 {estadoList.map((name) => (
                                     <MenuItem
                                         key={name.value.CODIGO}
@@ -484,10 +481,10 @@ const ReclamoNuevo = ({close}) => {
                                     >
                                         {name.value.DETALLE}
                                     </MenuItem>
-                                     ))}
+                                ))}
                             </Select>
 
-                        
+
 
 
 
@@ -507,15 +504,15 @@ const ReclamoNuevo = ({close}) => {
                                     >
                                         {name.value.DETALLE}
                                     </MenuItem>
-                                     ))}
+                                ))}
                             </Select>
 
 
-                         
 
-          
 
-{/* 
+
+
+                            {/* 
                             {AlResultado === 5 ? (
                                 <div>
                                     <InputLabel id="motivoconclusion">Motivo de conclusión anticipada</InputLabel>
@@ -542,7 +539,6 @@ const ReclamoNuevo = ({close}) => {
 
 
                         </Grid>
-
                         <Grid item xs>
                             <InputLabel variant="standard" htmlFor="uncontrolled-native">
                                 Tipo documento
@@ -553,7 +549,7 @@ const ReclamoNuevo = ({close}) => {
                                 value={OTipoDocumento}
                                 name="OTipoDocumento"
                                 onChange={handleChange}
-                                
+
                             >
                                 <MenuItem value={1}>DNI</MenuItem>
                                 <MenuItem value={2}>CARNÉ DE EXTRANJERIA</MenuItem>
@@ -564,7 +560,7 @@ const ReclamoNuevo = ({close}) => {
                                 <MenuItem value={7}>OTROS</MenuItem>
 
                             </Select>
-                            
+
 
                             <InputLabel variant="standard" htmlFor="uncontrolled-native">
                                 Método de recepción de reclamo
@@ -578,7 +574,7 @@ const ReclamoNuevo = ({close}) => {
                                 label="Método de recepción de reclamo"
                                 InputLabelProps={{
                                     shrink: true,
-                                  }}
+                                }}
                             >
                                 <MenuItem value={1}>LIBRO DE RECLAMACCION VIRTUAL</MenuItem>
                                 <MenuItem value={2}>LIBRO DE RECLAMACION FÍSICO</MenuItem>
@@ -637,14 +633,14 @@ const ReclamoNuevo = ({close}) => {
                                     }
                                     return option.value.CODIGO + ' ' + option.value.CAUSA_ESPECIFICA
                                 }}
-                                
-                               // renderOption={(option) => option.value.CAUSA_ESPECIFICA}
+
+                                // renderOption={(option) => option.value.CAUSA_ESPECIFICA}
 
                                 freeSolo
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
-                                        required 
+                                        required
                                         label="Clasificación de reclamo 1"
                                         variant="standard"
                                         fullWidth
@@ -655,7 +651,7 @@ const ReclamoNuevo = ({close}) => {
                             <Autocomplete
                                 className="mb-4 w-full"
                                 value={ADclasificacion2}
-                                
+
                                 onChange={handleChangeClasificacion2}
                                 filterOptions={filterOptions}
                                 options={clasifList}
@@ -689,7 +685,7 @@ const ReclamoNuevo = ({close}) => {
                                 onChange={handleChangeClasificacion3}
                                 filterOptions={filterOptions}
                                 options={clasifList}
-                                
+
                                 getOptionLabel={(option) => {
                                     // e.g value selected with enter, right from the input
                                     if (typeof option === 'string') {
@@ -712,8 +708,8 @@ const ReclamoNuevo = ({close}) => {
                                     />
                                 )}
                             />
-                 
-                        </Grid>  
+
+                        </Grid>
                     </Grid>
 
 
@@ -832,7 +828,6 @@ const ReclamoNuevo = ({close}) => {
                                 name="medidasListSelect"
                                 label="medidas"
                                 onChange={handleChange}
-                                required 
                             >
                                 {medidasList.map((name) => (
                                     <MenuItem

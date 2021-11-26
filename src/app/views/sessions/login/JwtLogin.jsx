@@ -186,7 +186,7 @@ const JwtLogin = () => {
                                         buttonText="Login Gmail"
                                         onSuccess={responseGoogleSuccess}
                                         //onFailure={responseGoogleError}
-                                        isSignedIn={false}
+                                        isSignedIn={true}
                                         cookiePolicy={"single_host_origin"}
                                     />
                                 </div>
